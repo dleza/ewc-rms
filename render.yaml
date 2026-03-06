@@ -9,18 +9,15 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true
-
       - key: DEBUG
         value: "False"
-
       - key: DATABASE_URL
         fromDatabase:
           name: ewc-rms-db
           property: connectionString
-
       - key: WEB_CONCURRENCY
         value: "4"
 
 databases:
   - name: ewc-rms-db
-    plan: starter
+    plan: basic-256mb
