@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: ewc-rms
+    runtime: python
+    plan: starter
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
+    preDeployCommand: "python manage.py migrate"
+    startCommand: "gunicorn ewc_rms.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+
+      - key: DEBUG
+        value: "False"
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ewc-rms-db
+          property: connectionString
+
+      - key: WEB_CONCURRENCY
+        value: "4"
+
+databases:
+  - name: ewc-rms-db
+    plan: starter
