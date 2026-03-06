@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h4 class="mb-1">{{ object.name }}</h4>
+    <div class="text-muted">
+      {{ object.get_group_type_display }} •
+      Leader: {% if object.leader %}{{ object.leader.full_name }}{% else %}-{% endif %} •
+      Members: {{ object.members_count }}
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{% url 'groups:list' %}">Back</a>
+    <a class="btn btn-outline-primary" href="{% url 'groups:update' object.pk %}">Edit Group</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="mb-2">Search Members</h6>
+        <form method="get" class="d-flex gap-2">
+          <input name="member_q" value="{{ member_q }}" class="form-control" placeholder="Name, member no, phone">
+          <button class="btn btn-outline-primary">Go</button>
+        </form>
+        <div class="small text-muted mt-2">
+          Tip: Search to quickly find someone, then tick the checkbox.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="mb-3">Assign Members</h6>
+
+        <form method="post" action="{% url 'groups:members_update' object.pk %}{% if member_q %}?member_q={{ member_q }}{% endif %}">
+          {% csrf_token %}
+
+          <div class="mb-3" style="max-height: 420px; overflow:auto;">
+            {% for checkbox in members_form.members %}
+              <div class="form-check">
+                {{ checkbox.tag }}
+                <label class="form-check-label">
+                  {{ checkbox.choice_label }}
+                </label>
+              </div>
+            {% empty %}
+              <div class="text-muted">No members found.</div>
+            {% endfor %}
+          </div>
+
+          <button class="btn btn-primary">Save Members</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

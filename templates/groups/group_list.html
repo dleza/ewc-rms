@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">Groups</h4>
+  <a class="btn btn-primary" href="{% url 'groups:create' %}">New Group</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <form class="row g-2">
+      <div class="col-md-6">
+        <input name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search by group name or leader">
+      </div>
+      <div class="col-md-3">
+        <select name="type" class="form-select">
+          <option value="">All types</option>
+          <option value="MINISTRY" {% if request.GET.type == "MINISTRY" %}selected{% endif %}>Ministry</option>
+          <option value="SERVICE" {% if request.GET.type == "SERVICE" %}selected{% endif %}>Service</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-outline-primary w-100">Filter</button>
+        <a class="btn btn-outline-secondary w-100" href="{% url 'groups:list' %}">Reset</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Leader</th>
+          <th class="text-end">Members</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for g in object_list %}
+        <tr>
+          <td><a href="{% url 'groups:detail' g.pk %}">{{ g.name }}</a></td>
+          <td>{{ g.get_group_type_display }}</td>
+          <td>{% if g.leader %}{{ g.leader.full_name }}{% else %}-{% endif %}</td>
+          <td class="text-end">{{ g.members_count }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'groups:update' g.pk %}">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center py-4">No groups found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

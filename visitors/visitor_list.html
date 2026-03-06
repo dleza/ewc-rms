@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">Visitors</h4>
+  <a class="btn btn-primary" href="{% url 'visitors:create' %}">New Visitor</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <form class="row g-2">
+      <div class="col-md-5">
+        <input name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search name, phone, address, prayer request">
+      </div>
+      <div class="col-md-2">
+        <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control">
+      </div>
+      <div class="col-md-2">
+        <input type="date" name="date_to" value="{{ request.GET.date_to }}" class="form-control">
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-outline-primary w-100">Filter</button>
+        <a class="btn btn-outline-secondary w-100" href="{% url 'visitors:list' %}">Reset</a>
+      </div>
+
+      <div class="col-12 d-flex flex-wrap gap-3 mt-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="need_visitation" value="1"
+                 {% if request.GET.need_visitation == "1" %}checked{% endif %}>
+          <label class="form-check-label">Need Visitation</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="joining" value="1"
+                 {% if request.GET.joining == "1" %}checked{% endif %}>
+          <label class="form-check-label">Joining</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="born_again" value="1"
+                 {% if request.GET.born_again == "1" %}checked{% endif %}>
+          <label class="form-check-label">Born Again</label>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Born Again</th>
+          <th>Joining</th>
+          <th>Need Visitation</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in object_list %}
+        <tr>
+          <td>{{ v.date }}</td>
+          <td>{{ v.full_name }}</td>
+          <td>{{ v.phone1 }}</td>
+          <td>{% if v.born_again %}Yes{% else %}No{% endif %}</td>
+          <td>{% if v.joining %}Yes{% else %}No{% endif %}</td>
+          <td>{% if v.need_visitation %}Yes{% else %}No{% endif %}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'visitors:update' v.pk %}">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center py-4">No visitors found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

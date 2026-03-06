@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h4 class="mb-1">{{ object.name }}</h4>
+    <div class="text-muted">{{ object.period_type }} — {{ object.start_date }} to {{ object.end_date }}</div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{% url 'finance:plans_list' %}">Back</a>
+    <a class="btn btn-outline-primary" href="{% url 'finance:plans_update' object.pk %}">Edit Plan</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="mb-3">Add Budget Line</h6>
+        <form method="post" action="{% url 'finance:plan_line_add' object.pk %}">
+          {% csrf_token %}
+          <div class="mb-2">
+            <label class="form-label">Category</label>
+            {{ line_form.category }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Amount Allocated</label>
+            {{ line_form.amount_allocated }}
+          </div>
+          <button class="btn btn-primary w-100">Add</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <div class="text-muted">Total Allocated</div>
+        <div class="fs-4">{{ object.total_allocated }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th class="text-end">Allocated</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for line in lines %}
+            <tr>
+              <td>{{ line.category.name }}</td>
+              <td class="text-end">{{ line.amount_allocated }}</td>
+              <td class="text-end">
+                <form method="post" action="{% url 'finance:plan_line_delete' object.pk line.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this budget line?')">
+                    Remove
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center py-4">No budget lines yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

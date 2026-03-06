@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title mb-3">{{ title|default:"Form" }}</h5>
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="row g-3">
+        {% for field in form %}
+          <div class="col-md-6">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors|striptags }}</div>
+            {% endif %}
+            {% if field.help_text %}
+              <div class="text-muted small">{{ field.help_text }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-primary">Save</button>
+        <a class="btn btn-outline-secondary" href="{{ cancel_url|default:'javascript:history.back()' }}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

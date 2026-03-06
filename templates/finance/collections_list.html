@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">Meeting Collections</h4>
+  <a class="btn btn-primary" href="{% url 'finance:collections_create' %}">New Collection</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <form class="row g-2">
+      <div class="col-md-3">
+        <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <input type="date" name="date_to" value="{{ request.GET.date_to }}" class="form-control">
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-outline-primary w-100">Filter</button>
+        <a class="btn btn-outline-secondary w-100" href="{% url 'finance:collections_list' %}">Reset</a>
+      </div>
+      <div class="col-md-3 text-muted small">
+        <div><strong>Offering:</strong> {{ sum_offering }}</div>
+        <div><strong>Tithe:</strong> {{ sum_tithe }}</div>
+        <div><strong>First Fruits:</strong> {{ sum_first_fruits }}</div>
+        <div><strong>Seed:</strong> {{ sum_seed }}</div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Counter</th>
+          <th class="text-end">Offering</th>
+          <th class="text-end">Tithe</th>
+          <th class="text-end">First Fruits</th>
+          <th class="text-end">Seed</th>
+          <th class="text-end">Total</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in object_list %}
+        <tr>
+          <td>{{ c.date }}</td>
+          <td>{{ c.name_of_counter }}</td>
+          <td class="text-end">{{ c.total_offering }}</td>
+          <td class="text-end">{{ c.total_tithe }}</td>
+          <td class="text-end">{{ c.total_first_fruits }}</td>
+          <td class="text-end">{{ c.total_seed_offering }}</td>
+          <td class="text-end"><strong>{{ c.total }}</strong></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'finance:collections_update' c.pk %}">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="text-center py-4">No collections found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

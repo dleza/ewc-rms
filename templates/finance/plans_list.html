@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">Budget Plans</h4>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{% url 'finance:categories_list' %}">Categories</a>
+    <a class="btn btn-primary" href="{% url 'finance:plans_create' %}">New Plan</a>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <form class="row g-2">
+      <div class="col-md-6">
+        <input name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search plan name">
+      </div>
+      <div class="col-md-3">
+        <select name="period_type" class="form-select">
+          <option value="">All periods</option>
+          <option value="WEEKLY" {% if request.GET.period_type == "WEEKLY" %}selected{% endif %}>Weekly</option>
+          <option value="MONTHLY" {% if request.GET.period_type == "MONTHLY" %}selected{% endif %}>Monthly</option>
+          <option value="ANNUAL" {% if request.GET.period_type == "ANNUAL" %}selected{% endif %}>Annual</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-outline-primary w-100">Filter</button>
+        <a class="btn btn-outline-secondary w-100" href="{% url 'finance:plans_list' %}">Reset</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Period</th>
+          <th>Start</th>
+          <th>End</th>
+          <th class="text-end">Allocated</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in object_list %}
+        <tr>
+          <td><a href="{% url 'finance:plans_detail' p.pk %}">{{ p.name }}</a></td>
+          <td>{{ p.period_type }}</td>
+          <td>{{ p.start_date }}</td>
+          <td>{{ p.end_date }}</td>
+          <td class="text-end">{{ p.total_allocated }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'finance:plans_update' p.pk %}">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center py-4">No budget plans found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

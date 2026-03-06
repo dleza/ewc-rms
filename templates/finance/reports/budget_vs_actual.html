@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h4 class="mb-1">Budget vs Actual</h4>
+    <div class="text-muted">
+      {{ plan.name }} — {{ plan.start_date }} to {{ plan.end_date }}
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Total Allocated</div>
+      <div class="fs-4">{{ total_allocated }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Total Spent</div>
+      <div class="fs-4">{{ total_spent }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Variance</div>
+      <div class="fs-4">{{ total_variance }}</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th class="text-end">Allocated</th>
+          <th class="text-end">Spent</th>
+          <th class="text-end">Variance</th>
+          <th class="text-end">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+          <tr class="{% if r.is_over %}table-danger{% endif %}">
+            <td>{{ r.category }}</td>
+            <td class="text-end">{{ r.allocated }}</td>
+            <td class="text-end">{{ r.spent }}</td>
+            <td class="text-end">{{ r.variance }}</td>
+            <td class="text-end">
+              {% if r.is_over %}
+                <span class="badge text-bg-danger">Over</span>
+              {% else %}
+                <span class="badge text-bg-success">Under</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="text-center py-4">No budget lines found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

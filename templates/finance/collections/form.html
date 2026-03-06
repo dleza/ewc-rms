@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">{{ title }}</h4>
+  <a class="btn btn-outline-secondary" href="{{ cancel_url }}">Back</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label class="form-label">Date</label>
+          {{ form.date }}
+          {% if form.date.errors %}
+            <div class="text-danger small">{{ form.date.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Name of Counter</label>
+          {{ form.name_of_counter }}
+          {% if form.name_of_counter.errors %}
+            <div class="text-danger small">{{ form.name_of_counter.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Notes</label>
+          {{ form.notes }}
+          {% if form.notes.errors %}
+            <div class="text-danger small">{{ form.notes.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if is_create and not formset %}
+        <div class="alert alert-info">
+          Save this collection first, then enter the category amounts.
+        </div>
+        <button class="btn btn-primary">Save & Continue</button>
+      {% else %}
+        {{ formset.management_form }}
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th style="width:220px;" class="text-end">Amount</th>
+                <th class="text-end">Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for f in formset %}
+              <tr>
+                <td>
+                  {{ f.id }}
+                  {{ f.category }}
+                  {% if f.category.errors %}
+                    <div class="text-danger small">{{ f.category.errors|striptags }}</div>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  {{ f.amount }}
+                  {% if f.amount.errors %}
+                    <div class="text-danger small">{{ f.amount.errors|striptags }}</div>
+                  {% endif %}
+                </td>
+                <td class="text-end">{{ f.DELETE }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <button class="btn btn-primary">Save</button>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}
